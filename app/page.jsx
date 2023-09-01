@@ -9,8 +9,8 @@ const Home = () => {
         <span className="orange_gradient text-center">AI-Powered Prompts</span>
       </h1>
       <p className="desc text-center">
-        Promptforge is an open-source AI prompting tool for modern world to
-        discover, create and share creative prompts
+        Prompt Forge: AI prompts for modern creativity. Discover, create, share.
+        Your creative companion.
       </p>
       <Feed />
     </section>
