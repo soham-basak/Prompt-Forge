@@ -7,7 +7,7 @@ export const metadata = {
   description: "A collection of AI prompts.",
 };
 
-const RootLayout = ({ children }) => {
+const RootLayout = async ({ children }) => {
   return (
     <html lang="en">
       <body>

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Form from "@/components/Form";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const EditPrompt = () => {
   const Router = useRouter();
@@ -39,22 +39,20 @@ const EditPrompt = () => {
     if (!promptId) return alert("Prompt Id not found.");
 
     try {
-      const response = await fetch(`/api/prompt/${promptId}`, {
+      await fetch(`/api/prompt/${promptId}`, {
         method: "PATCH",
         body: JSON.stringify({
           prompt: post.prompt,
           tag: post.tag,
         }),
       });
-      if (response.ok) {
-        Router.push("/");
-      }
+      revalidateTag("/profile");
     } catch (error) {
       console.log(error);
     } finally {
       setSubmitting(false);
+      Router.push("/");
     }
-    revalidatePath();
   };
 
   return (

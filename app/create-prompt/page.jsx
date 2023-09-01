@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Form from "@/components/Form";
+import { revalidateTag } from "next/cache";
 
 const CreatePrompt = () => {
   const router = useRouter();
@@ -19,7 +20,7 @@ const CreatePrompt = () => {
     setSubmitting(true);
 
     try {
-      const response = await fetch("/api/prompt/new", {
+      await fetch("/api/prompt/new", {
         method: "POST",
         body: JSON.stringify({
           prompt: post.prompt,
@@ -27,13 +28,12 @@ const CreatePrompt = () => {
           tag: post.tag,
         }),
       });
-      if (response.ok) {
-        router.push("/");
-      }
+      revalidateTag("/profile");
     } catch (error) {
       console.log(error);
     } finally {
       setSubmitting(false);
+      router.push("/");
     }
   };
 
