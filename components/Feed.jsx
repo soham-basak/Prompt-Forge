@@ -23,11 +23,13 @@ const Feed = () => {
 
   const handleSearchChange = (e) => {};
 
+  const handleTagClick = async () => {};
+
   useEffect(() => {
     const fetchPosts = async () => {
       const response = await fetch("/api/prompt");
-      const data = await response.json();
-      setPosts(data);
+      const prompts = await response.json();
+      setPosts(prompts);
     };
     fetchPosts();
   }, []);
@@ -43,7 +45,7 @@ const Feed = () => {
           className="search_input peer"
         />
       </form>
-      <PromptCardList data={posts} handleTagClick={() => {}} />
+      <PromptCardList data={posts} handleTagClick={handleTagClick} />
     </section>
   );
 };
