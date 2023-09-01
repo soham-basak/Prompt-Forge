@@ -25,12 +25,14 @@ const Feed = () => {
 
   const handleTagClick = async () => {};
 
+  const fetchPosts = async () => {
+    const response = await fetch("/api/prompt");
+    const data = await response.json();
+
+    setPosts(data);
+  };
+
   useEffect(() => {
-    const fetchPosts = async () => {
-      const response = await fetch("/api/prompt");
-      const prompts = await response.json();
-      setPosts(prompts);
-    };
     fetchPosts();
   }, []);
   return (
