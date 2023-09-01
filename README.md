@@ -4,6 +4,10 @@
 
 Prompt Forge is an open-source AI prompting tool for creative minds. This website is built with Next.js and MongoDB.
 
+# Prompt Forge Website
+
+![Prompt Forge Screenshot](banner1.png)
+
 ## Live Demo
 
 You can explore Prompt Forge live by visiting the following link:
