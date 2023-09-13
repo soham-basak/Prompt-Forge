@@ -1,41 +1,13 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import PromptCardList from "./PromptCardList";
 
-import PromptCard from "./PromptCard";
-
-const PromptCardList = ({ data, handleTagClick }) => {
-  return (
-    <div className="mt-16 prompt_layout">
-      {data.map((post) => (
-        <PromptCard
-          key={post._id}
-          post={post}
-          handleTagClick={handleTagClick}
-        />
-      ))}
-    </div>
-  );
-};
-
-const Feed = () => {
-  const [allPosts, setAllPosts] = useState([]);
-
+const Feed = ({ allPosts }) => {
   // Search states
   const [searchText, setSearchText] = useState("");
   const [searchTimeout, setSearchTimeout] = useState(null);
   const [searchedResults, setSearchedResults] = useState([]);
-
-  const fetchPosts = async () => {
-    const response = await fetch("/api/prompt");
-    const data = await response.json();
-
-    setAllPosts(data);
-  };
-
-  useEffect(() => {
-    fetchPosts();
-  }, []);
 
   const filterPrompts = (searchtext) => {
     const regex = new RegExp(searchtext, "i"); // 'i' flag for case-insensitive search
@@ -48,7 +20,6 @@ const Feed = () => {
   };
 
   const handleSearchChange = (e) => {
-    clearTimeout(searchTimeout);
     setSearchText(e.target.value);
 
     // debounce method
@@ -56,14 +27,17 @@ const Feed = () => {
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
         setSearchedResults(searchResult);
-      }, 500)
+      }, 2500)
     );
+
+    clearTimeout(searchTimeout);
   };
 
-  const handleTagClick = (tagName) => {
-    setSearchText(tagName);
+  const handleTagClick = (tag) => {
+    console.log(tag);
+    setSearchText(tag);
 
-    const searchResult = filterPrompts(tagName);
+    const searchResult = filterPrompts(tag);
     setSearchedResults(searchResult);
   };
 

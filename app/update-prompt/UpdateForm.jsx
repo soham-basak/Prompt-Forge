@@ -1,39 +1,16 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import SubmitBtn from "@/app/create-prompt/SubmitBtn";
-import { getServerSession } from "next-auth";
-import { revalidatePath } from "next/cache";
+"use client";
+
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useTransition } from "react";
+import { updatePromptAction } from "./actions";
 
-const createPromptAction = async (formData) => {
-  "use server";
+const UpdateForm = ({ type }) => {
+  const [isPending, startTransition] = useTransition();
+  const searchParams = useSearchParams();
 
-  const session = await getServerSession(authOptions);
+  const id = searchParams.get("id");
 
-  const prompt = formData.get("prompt")?.toString();
-  const tag = formData.get("tag")?.toString();
-
-  try {
-    if (!prompt || !tag) return;
-
-    await fetch(`${process.env.NEXTAUTH_URI_INTERNAL}/api/prompt/new`, {
-      method: "POST",
-      body: JSON.stringify({
-        prompt,
-        userId: session?.user.id,
-        tag,
-      }),
-    });
-
-    revalidatePath("/");
-  } catch (err) {
-    console.log(err);
-  } finally {
-    redirect("/");
-  }
-};
-
-const Form = ({ type }) => {
   return (
     <section className="w-full max-w-full flex-start flex-col">
       <h1 className="head_text text-left">
@@ -45,7 +22,11 @@ const Form = ({ type }) => {
       </p>
 
       <form
-        action={createPromptAction}
+        action={(formData) =>
+          startTransition(async () => {
+            await updatePromptAction(formData, id);
+          })
+        }
         className="mt-10 w-full max-w-2xl flex flex-col gap-7 glassmorphism"
       >
         <lable>
@@ -79,11 +60,18 @@ const Form = ({ type }) => {
           <Link href="/" className="text-gray-500 text-sm">
             Cancel
           </Link>
-          <SubmitBtn type={type} />
+
+          <button
+            type="submit"
+            disabled={isPending}
+            className="px-5 py-1.5 text-sm bg-primary-orange rounded-full text-white"
+          >
+            {isPending ? `${type}...` : type}
+          </button>
         </div>
       </form>
     </section>
   );
 };
 
-export default Form;
+export default UpdateForm;
