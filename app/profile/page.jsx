@@ -6,13 +6,30 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import { revalidatePath } from "next/cache";
 
 async function getData(session) {
-  "use server";
   const res = await fetch(
-    `http:localhost:3000/api/users/${session?.user.id}/posts`
+    `${process.env.NEXTAUTH_URI_INTERNAL}/api/users/${session?.user.id}/posts`
   );
+
+  if (!res.ok) {
+    throw new Error("failed to get data from servers!");
+  }
 
   return res.json();
 }
+
+const handleDelete = async (id) => {
+  "use server";
+
+  try {
+    await fetch(`${process.env.NEXTAUTH_URI_INTERNAL}/api/prompt/${id}`, {
+      method: "DELETE",
+    });
+
+    revalidatePath("/profile");
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const MyProfile = async () => {
   const session = await getServerSession(authOptions);
@@ -24,19 +41,6 @@ const MyProfile = async () => {
     redirect(`/update-prompt?id=${post._id}`);
   };
 
-  const handleDelete = async (id) => {
-    "use server";
-    try {
-      await fetch(`http://localhost:3000/api/prompt/${id}`, {
-        method: "DELETE",
-      });
-
-      revalidatePath("/profile");
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <Profile
       name="My"
@@ -44,6 +48,7 @@ const MyProfile = async () => {
       data={myPosts}
       handleEdit={handleEdit}
       handleDelete={handleDelete}
+      session={session}
     />
   );
 };
