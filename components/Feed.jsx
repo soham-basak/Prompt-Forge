@@ -27,7 +27,7 @@ const Feed = ({ allPosts }) => {
       setTimeout(() => {
         const searchResult = filterPrompts(e.target.value);
         setSearchedResults(searchResult);
-      }, 2500)
+      }, 500)
     );
 
     clearTimeout(searchTimeout);
