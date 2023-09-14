@@ -2,21 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState, useEffect } from "react";
-import { signIn, signOut, getProviders } from "next-auth/react";
+import { useState } from "react";
+import { signIn, signOut } from "next-auth/react";
 
 const Nav = ({ session }) => {
-  const [providers, setProviders] = useState(null);
   const [toggleDropdown, settoggleDropdown] = useState(false);
-
-  useEffect(() => {
-    const setUpProviders = async () => {
-      const response = await getProviders();
-      setProviders(response);
-    };
-
-    setUpProviders();
-  }, []);
 
   return (
     <nav className="flex-between w-full mb-16 pt-3">
@@ -51,19 +41,13 @@ const Nav = ({ session }) => {
             </Link>
           </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className="black_btn"
-                >
-                  Sign In
-                </button>
-              ))}
-          </>
+          <button
+            type="button"
+            onClick={() => signIn("google")}
+            className="black_btn"
+          >
+            Sign In
+          </button>
         )}
       </div>
 
@@ -109,19 +93,13 @@ const Nav = ({ session }) => {
             )}
           </div>
         ) : (
-          <>
-            {providers &&
-              Object.values(providers).map((provider) => (
-                <button
-                  type="button"
-                  key={provider.name}
-                  onClick={() => signIn(provider.id)}
-                  className="black_btn"
-                >
-                  Sign In
-                </button>
-              ))}
-          </>
+          <button
+            type="button"
+            onClick={() => signIn("google")}
+            className="black_btn"
+          >
+            Sign In
+          </button>
         )}
       </div>
     </nav>
